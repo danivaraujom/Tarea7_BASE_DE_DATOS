@@ -38,28 +38,20 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        // Inicialización de HomeworkDAO
         homeworkDAO = new HomeworkDAO(this);
-
-        // Configuración del RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Cargar lista de tareas desde la base de datos
         loadHomeworkList();
-
-        // Configuración del adaptador
         adapter = new HomeworkAdapter(homeworkList, homework -> showBottomSheet(homework));
         recyclerView.setAdapter(adapter);
-
-        // Configuración del botón flotante
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> showAddHomeworkDialog(null));
     }
 
     private void loadHomeworkList() {
-        // Obtén las tareas desde el DAO
-        homeworkList = homeworkDAO.getAllHomework();
+        homeworkList = homeworkDAO.obtenerTodasLasTareas();
         if (homeworkList == null) {
             homeworkList = new ArrayList<>();
         }
@@ -70,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAddHomeworkDialog(Homework homeworkToEdit) {
         NewHomeworkDialogFragment dialog = new NewHomeworkDialogFragment();
-
-        // Si se edita, pasa la tarea existente al diálogo
         if (homeworkToEdit != null) {
             Bundle args = new Bundle();
             args.putParcelable("homework", homeworkToEdit);
@@ -80,15 +70,13 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setOnHomeworkSavedListener(homework -> {
             if (homeworkToEdit == null) {
-                // Insertar nueva tarea
-                long id = homeworkDAO.insertHomework(homework);
+                long id = homeworkDAO.insertarTarea(homework);
                 if (id > 0) {
                     homework.setId((int) id);
                     homeworkList.add(homework);
                 }
             } else {
-                // Actualizar tarea existente
-                int rows = homeworkDAO.updateHomework(homework);
+                int rows = homeworkDAO.actualizarTarea(homework);
                 if (rows > 0) {
                     int index = homeworkList.indexOf(homeworkToEdit);
                     homeworkList.set(index, homework);
@@ -103,11 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private void showBottomSheet(Homework homework) {
         // Crear el diálogo
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-
-        // Inflar el layout del diálogo
         View view = getLayoutInflater().inflate(R.layout.bottom_sheet_homework_options, null);
-
-        // Configuración de las opciones
         view.findViewById(R.id.editOption).setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
             showAddHomeworkDialog(homework);
@@ -121,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         view.findViewById(R.id.completeOption).setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
             homework.setCompleted(true);
-            int rows = homeworkDAO.updateHomework(homework);
+            int rows = homeworkDAO.actualizarTarea(homework);
             if (rows > 0) {
                 adapter.notifyDataSetChanged();
                 Toast.makeText(this, "Tarea marcada como completada", Toast.LENGTH_SHORT).show();
@@ -138,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Confirmar eliminación")
                 .setMessage("¿Estás seguro de que deseas eliminar este deber?")
                 .setPositiveButton("Eliminar", (dialog, which) -> {
-                    int rows = homeworkDAO.deleteHomework(homework.getId());
+                    int rows = homeworkDAO.eliminarTarea(homework.getId());
                     if (rows > 0) {
                         homeworkList.remove(homework);
                         adapter.notifyDataSetChanged();

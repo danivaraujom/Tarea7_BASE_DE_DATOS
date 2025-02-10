@@ -1,4 +1,4 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -37,11 +37,12 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp" />
 
+    <!-- Estado de la tarea (completada o pendiente) -->
     <TextView
         android:id="@+id/statusTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fecha de entrega: 20/12/2024"
+        android:text="Pendiente"
         android:textColor="@android:color/darker_gray"
         android:textSize="12sp" />
 

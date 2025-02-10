@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private HomeworkAdapter adapter;
     private List<Homework> homeworkList;
     private HomeworkDAO homeworkDAO;
+    private ListaHomeworkViewModel listaHomeworkViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +41,25 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
         homeworkDAO = new HomeworkDAO(this);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        listaHomeworkViewModel=new ViewModelProvider(this).get(ListaHomeworkViewModel.class);
+        final Observer<ArrayList> observador1= new Observer<ArrayList>() {
+            @Override
+            public void onChanged(ArrayList arrayList) {
+
+            }
+        }
 
         // Cargar lista de tareas desde la base de datos
         loadHomeworkList();
         adapter = new HomeworkAdapter(homeworkList, homework -> showBottomSheet(homework));
         recyclerView.setAdapter(adapter);
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> showAddHomeworkDialog(null));
     }

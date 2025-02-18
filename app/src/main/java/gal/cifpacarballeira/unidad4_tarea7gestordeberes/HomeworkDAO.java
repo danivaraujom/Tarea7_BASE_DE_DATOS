@@ -1,5 +1,6 @@
 package gal.cifpacarballeira.unidad4_tarea7gestordeberes;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -56,12 +57,13 @@ public class HomeworkDAO {
 
         if (cursor.moveToFirst()) {
             do {
+                @SuppressLint("Range")
                 Homework tarea = new Homework(
-                        cursor.getInt(cursor.getColumnIndexOrThrow("id")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("subject")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
-                        cursor.getString(cursor.getColumnIndexOrThrow("dueDate")),
-                        cursor.getInt(cursor.getColumnIndexOrThrow("isCompleted")) != 0
+                        cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("subject")),
+                        cursor.getString(cursor.getColumnIndex("description")),
+                        cursor.getString(cursor.getColumnIndex("dueDate")),
+                        cursor.getInt(cursor.getColumnIndex("isCompleted")) != 0
                 );
                 listaTareas.add(tarea);
             } while (cursor.moveToNext());
@@ -72,6 +74,7 @@ public class HomeworkDAO {
         return listaTareas;
     }
 
+    @SuppressLint("Range")
     public Homework obtenerTareaPorId(int id) {
         SQLiteDatabase db = baseDeDatos.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM homework WHERE id = ?", new String[]{String.valueOf(id)});
@@ -79,11 +82,11 @@ public class HomeworkDAO {
 
         if (cursor.moveToFirst()) {
             tarea = new Homework(
-                    cursor.getInt(cursor.getColumnIndexOrThrow("id")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("subject")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("description")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("dueDate")),
-                    cursor.getInt(cursor.getColumnIndexOrThrow("isCompleted")) != 0
+                    cursor.getInt(cursor.getColumnIndex("id")),
+                    cursor.getString(cursor.getColumnIndex("subject")),
+                    cursor.getString(cursor.getColumnIndex("description")),
+                    cursor.getString(cursor.getColumnIndex("dueDate")),
+                    cursor.getInt(cursor.getColumnIndex("isCompleted")) != 0
             );
         }
 

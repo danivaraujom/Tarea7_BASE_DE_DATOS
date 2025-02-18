@@ -10,7 +10,7 @@ import java.util.List;
 
 public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.HomeworkViewHolder> {
 
-    private final List<Homework> homeworkList;
+    private List<Homework> homeworkList;
     private final OnHomeworkClickListener listener;
 
     // Constructor
@@ -36,12 +36,17 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         holder.statusTextView.setText(homework.isCompleted() ? "Completado" : "Pendiente");
 
         holder.itemView.setOnClickListener(v -> listener.onHomeworkClick(homework));
-
     }
 
     @Override
     public int getItemCount() {
         return homeworkList.size();
+    }
+
+    // Método para actualizar la lista de tareas
+    public void updateHomeworkList(List<Homework> newHomeworkList) {
+        this.homeworkList = newHomeworkList;  // Actualiza la lista interna del Adapter
+        notifyDataSetChanged();  // Notifica al RecyclerView que los datos han cambiado
     }
 
     // ViewHolder
@@ -66,4 +71,3 @@ public class HomeworkAdapter extends RecyclerView.Adapter<HomeworkAdapter.Homewo
         void onHomeworkClick(Homework homework);
     }
 }
-
